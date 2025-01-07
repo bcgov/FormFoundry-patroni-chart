@@ -88,7 +88,7 @@ persistentVolume:
   accessModes:
     - ReadWriteOnce
   annotations: {}
-  mountPath: "/home/postgres/pgdata"
+  mountPath: "/var/lib/postgresql/data"
   size: 300Mi
   storageClass: "netapp-block-standard"
 
