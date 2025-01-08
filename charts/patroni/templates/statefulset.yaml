@@ -113,8 +113,6 @@ spec:
               value: "500"
             - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
               value: "500"
-            - name: POSTGRESQL_LISTEN_ADDRESSES
-              value: "*"
           lifecycle:
             preStop:
               exec:
