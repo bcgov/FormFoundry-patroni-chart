@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-form-templates-table
+spec:
+  template:
+    spec:
+      containers:
+      - name: form-template-init
+        image: postgres:12  
+        env:
+        - name: POSTGRES_HOST
+          value: template-repo-patroni
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: template-repo-patroni
+              key: app-db-username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: template-repo-patroni
+              key: app-db-password
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: template-repo-patroni
+              key: app-db-name
+        command: ["sh", "-c"]
+        args:
+          - |
+            PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -c "
+            CREATE TABLE IF NOT EXISTS form_templates (
+                id UUID PRIMARY KEY,
+                version VARCHAR(10),
+                ministry_id VARCHAR(10),
+                last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                title TEXT,
+                form_id TEXT,
+                deployed_to VARCHAR(10),
+                dataSources JSONB,
+                data JSONB NOT NULL
+            );
+            ";
+      restartPolicy: Never
+  backoffLimit: 1

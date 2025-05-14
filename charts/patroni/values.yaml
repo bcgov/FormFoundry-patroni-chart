@@ -94,3 +94,6 @@ persistentVolume:
   mountPath: "/home/postgres/pgdata"
   size: 250Mi
   storageClass: "netapp-block-standard"
+
+walCleanup:
+  schedule: "30 8 * * 1"
