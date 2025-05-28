@@ -22,8 +22,8 @@ spec:
                   echo "[WAL CLEANUP] $(date)";
                   # Keep only the 2 newest WAL segments and 2 newest history files
                   kubectl exec {{ printf "%s-%s" (include "patroni.fullname" $) $pod }} -- /bin/sh -c '\
-                    find /home/postgres/pgdata/pgroot/data/pg_wal -maxdepth 1 -type f -name "000000*" ! -name "*.history" 2>/dev/null | tail -n +3; \
-                    find /home/postgres/pgdata/pgroot/data/pg_wal -maxdepth 1 -type f -name "*.history"      2>/dev/null | tail -n +3; \
-                  ' | xargs -r rm -f;
+                    ls -1t /home/postgres/pgdata/pgroot/data/pg_wal/000000* 2>/dev/null | grep -v "\.history$" | tail -n +3 | xargs -r rm -f;
+                    ls -1t /home/postgres/pgdata/pgroot/data/pg_wal/*.history 2>/dev/null | tail -n +3 | xargs -r rm -f;
+                  '
           restartPolicy: OnFailure
 {{- end }}
