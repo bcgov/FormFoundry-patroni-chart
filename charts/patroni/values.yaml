@@ -97,3 +97,7 @@ persistentVolume:
 
 walCleanup:
   schedule: "30 8 * * 1"
+
+postgresql:
+  parameters:
+    recovery_target_timeline: 'latest'
