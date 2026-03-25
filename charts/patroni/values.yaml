@@ -101,3 +101,8 @@ walCleanup:
 postgresql:
   parameters:
     recovery_target_timeline: 'latest'
+    wal_keep_size: 32MB
+    archive_mode: 'on'
+    archive_command: 'true'
+    max_wal_size: 64MB
+    min_wal_size: 32MB

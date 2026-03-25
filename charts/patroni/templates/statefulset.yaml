@@ -63,14 +63,12 @@ spec:
             - name: POD_IP
               valueFrom:
                 fieldRef:
-                  apiVersion: v1
                   fieldPath: status.podIP
             - name: PATRONI_KUBERNETES_LABELS
               value: {{ include "patroni.selectorLabels" . | fromYaml | toJson | squote }}
             - name: PATRONI_KUBERNETES_NAMESPACE
               valueFrom:
                 fieldRef:
-                  apiVersion: v1
                   fieldPath: metadata.namespace
             - name: PATRONI_SUPERUSER_USERNAME
               valueFrom:
@@ -97,7 +95,6 @@ spec:
             - name: PATRONI_NAME
               valueFrom:
                 fieldRef:
-                  apiVersion: v1
                   fieldPath: metadata.name
             - name: PATRONI_POSTGRESQL_DATA_DIR
               value: "{{ .Values.persistentVolume.mountPath }}/pgroot/data"
@@ -113,6 +110,18 @@ spec:
               value: "500"
             - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
               value: "500"
+            - name: PATRONI_POSTGRESQL_PARAMETERS__RECOVERY_TARGET_TIMELINE
+              value: "latest"
+            - name: PATRONI_POSTGRESQL_PARAMETERS__WAL_KEEP_SEGMENTS
+              value: "2"           
+            - name: PATRONI_POSTGRESQL_PARAMETERS__ARCHIVE_MODE
+              value: "on"
+            - name: PATRONI_POSTGRESQL_PARAMETERS__ARCHIVE_COMMAND
+              value: "true"
+            - name: PATRONI_POSTGRESQL_PARAMETERS__MAX_WAL_SIZE
+              value: 64MB
+            - name: PATRONI_POSTGRESQL_PARAMETERS__MIN_WAL_SIZE
+              value: 32MB
           lifecycle:
             preStop:
               exec:

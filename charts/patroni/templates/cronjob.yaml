@@ -1,29 +1,29 @@
-{{- range $i, $pod := list "0" "1" "2" }}
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: {{ printf "%s-wal-cleanup-patroni-%s" (include "patroni.fullname" $) $pod }}
-spec:
-  schedule: {{ $.Values.walCleanup.schedule | quote }}
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          serviceAccountName: {{ include "patroni.serviceAccountName" $ }}
-          containers:
-            - name: wal-cleaner
-              image: bitnami/kubectl:latest
-              imagePullPolicy: Always
-              command:
-                - /bin/sh
-                - -c
-                - |
-                  echo "[WAL CLEANUP] $(date)";
-                  # Keep only the 2 newest WAL segments and 2 newest history files
-                  kubectl exec {{ printf "%s-%s" (include "patroni.fullname" $) $pod }} -- /bin/sh -c '\
-                    ls -1t /home/postgres/pgdata/pgroot/data/pg_wal/000000* 2>/dev/null | grep -v "\.history$" | tail -n +3 | xargs -r rm -f;
-                    ls -1t /home/postgres/pgdata/pgroot/data/pg_wal/*.history 2>/dev/null | tail -n +3 | xargs -r rm -f;
-                  '
-          restartPolicy: OnFailure
-{{- end }}
+# {{- range $i, $pod := list "0" "1" "2" }}
+# ---
+# apiVersion: batch/v1
+# kind: CronJob
+# metadata:
+#   name: {{ printf "%s-wal-cleanup-patroni-%s" (include "patroni.fullname" $) $pod }}
+# spec:
+#   schedule: {{ $.Values.walCleanup.schedule | quote }}
+#   jobTemplate:
+#     spec:
+#       template:
+#         spec:
+#           serviceAccountName: {{ include "patroni.serviceAccountName" $ }}
+#           containers:
+#             - name: wal-cleaner
+#               image: bitnami/kubectl:latest
+#               imagePullPolicy: Always
+#               command:
+#                 - /bin/sh
+#                 - -c
+#                 - |
+#                   echo "[WAL CLEANUP] $(date)";
+#                   # Keep only the 2 newest WAL segments and 2 newest history files
+#                   kubectl exec {{ printf "%s-%s" (include "patroni.fullname" $) $pod }} -- /bin/sh -c '\
+#                     ls -1t /home/postgres/pgdata/pgroot/data/pg_wal/000000* 2>/dev/null | grep -v "\.history$" | tail -n +3 | xargs -r rm -f;
+#                     ls -1t /home/postgres/pgdata/pgroot/data/pg_wal/*.history 2>/dev/null | tail -n +3 | xargs -r rm -f;
+#                   '
+#           restartPolicy: OnFailure
+# {{- end }}
